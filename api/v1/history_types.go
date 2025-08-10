@@ -63,6 +63,7 @@ func (h *History) Upsert(digest string, timestamp time.Time, duration time.Durat
 			// Update existing snapshot
 			(*h)[i].LastReconciled = now
 			(*h)[i].LastReconciledDuration = durationMeta
+			(*h)[i].TotalReconciliations++
 			(*h)[i].Metadata = metadata
 			// Move to front if not already there
 			if i > 0 {
@@ -81,6 +82,7 @@ func (h *History) Upsert(digest string, timestamp time.Time, duration time.Durat
 		LastReconciled:         now,
 		LastReconciledDuration: durationMeta,
 		LastReconciledStatus:   status,
+		TotalReconciliations:   1,
 		Metadata:               metadata,
 	}
 
@@ -111,6 +113,10 @@ type Snapshot struct {
 	// LastReconciledStatus is the status of the last reconciliation.
 	// +required
 	LastReconciledStatus string `json:"lastReconciledStatus"`
+
+	// TotalReconciliations is the total number of reconciliations that have occurred for this snapshot.
+	// + required
+	TotalReconciliations int64 `json:"totalReconciliations"`
 
 	// Metadata contains additional information about the snapshot.
 	// +optional
